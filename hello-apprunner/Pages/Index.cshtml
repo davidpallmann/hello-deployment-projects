@@ -1,0 +1,21 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "On This Date";
+}
+
+<div class="text-center">
+    <h1 class="display-4">On This Date</h1>
+    <p>@Model.Heading</p>
+    @if (@Model.Items.Count == 0)
+    {
+        <p>Sorry, we have no data about anything interesting happening on this day. Check back tomorrow!</p>
+    }
+    else
+    {
+        foreach(var item in @Model.Items)
+        {
+            <p>@item</p>
+        }
+    }
+</div>

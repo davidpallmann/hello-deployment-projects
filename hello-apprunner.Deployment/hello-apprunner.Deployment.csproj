@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RollForward>Major</RollForward>
+    <Nullable>enable</Nullable>
+    <AWSProjectType>DeploymentProject</AWSProjectType>
+    <!-- The value "0.39.8+c8a2542bd1" is replaced by the project template system. -->
+    <RecipeCDKCommonVersion>0.39.8+c8a2542bd1</RecipeCDKCommonVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="cdk.out\**" />
+    <EmbeddedResource Remove="cdk.out\**" />
+    <None Remove="cdk.out\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="node_modules\**" />
+    <EmbeddedResource Remove="node_modules\**" />
+    <None Remove="node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- CDK Construct Library dependencies -->
+    <PackageReference Include="Amazon.CDK.Lib" Version="2.13.0" />
+
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.7" />
+
+    <!-- jsii Roslyn analyzers (un-comment to obtain compile-time checks for missing required props
+    <PackageReference Include="Amazon.Jsii.Analyzers" Version="*" PrivateAssets="all" />
+    -->
+  </ItemGroup>
+
+  <!--If the project template is being compiled it self the "0.39.8+c8a2542bd1" token won't have been replaced. To make sure the project can still compile use a project reference. -->
+  <ItemGroup Condition=" '$(RecipeCDKCommonVersion.ToUpper())' == 'AWSDEPLOYRECIPESCDKCOMMONVERSION' ">
+    <ProjectReference Include="..\..\..\AWS.Deploy.Recipes.CDK.Common\AWS.Deploy.Recipes.CDK.Common.csproj" />
+  </ItemGroup>
+  <!-- The project has run through the project template engine and "0.39.8+c8a2542bd1" has been replaced with valid version number so a PackageReference is used. -->
+  <ItemGroup Condition=" '$(RecipeCDKCommonVersion.ToUpper())' != 'AWSDEPLOYRECIPESCDKCOMMONVERSION' ">
+    <PackageReference Include="AWS.Deploy.Recipes.CDK.Common" Version="0.39.8+c8a2542bd1" />
+  </ItemGroup>
+
+</Project>

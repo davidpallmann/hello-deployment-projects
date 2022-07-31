@@ -1,0 +1,522 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.0.0"
+        }
+      },
+      "hello-apprunner": {
+        "id": "hello-apprunner",
+        "path": "hello-apprunner",
+        "children": {
+          "default-vpc": {
+            "id": "default-vpc",
+            "path": "hello-apprunner/default-vpc",
+            "children": {
+              "PublicSubnet1": {
+                "id": "PublicSubnet1",
+                "path": "hello-apprunner/default-vpc/PublicSubnet1",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.13.0"
+                }
+              },
+              "PublicSubnet2": {
+                "id": "PublicSubnet2",
+                "path": "hello-apprunner/default-vpc/PublicSubnet2",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.13.0"
+                }
+              },
+              "PublicSubnet3": {
+                "id": "PublicSubnet3",
+                "path": "hello-apprunner/default-vpc/PublicSubnet3",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.13.0"
+                }
+              },
+              "PublicSubnet4": {
+                "id": "PublicSubnet4",
+                "path": "hello-apprunner/default-vpc/PublicSubnet4",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.13.0"
+                }
+              },
+              "dynamo-gateway-endpoint": {
+                "id": "dynamo-gateway-endpoint",
+                "path": "hello-apprunner/default-vpc/dynamo-gateway-endpoint",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "hello-apprunner/default-vpc/dynamo-gateway-endpoint/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::EC2::VPCEndpoint",
+                      "aws:cdk:cloudformation:props": {
+                        "serviceName": {
+                          "Fn::Join": [
+                            "",
+                            [
+                              "com.amazonaws.",
+                              {
+                                "Ref": "AWS::Region"
+                              },
+                              ".dynamodb"
+                            ]
+                          ]
+                        },
+                        "vpcId": "vpc-05416f8b2c2f67d34",
+                        "routeTableIds": [
+                          "rtb-09d065688b8576262"
+                        ],
+                        "vpcEndpointType": "Gateway"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_ec2.CfnVPCEndpoint",
+                      "version": "2.13.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.GatewayVpcEndpoint",
+                  "version": "2.13.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.Resource",
+              "version": "2.13.0"
+            }
+          },
+          "sg-vpc-connector": {
+            "id": "sg-vpc-connector",
+            "path": "hello-apprunner/sg-vpc-connector",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "hello-apprunner/sg-vpc-connector/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
+                  "aws:cdk:cloudformation:props": {
+                    "groupDescription": "hello-apprunner/sg-vpc-connector",
+                    "securityGroupEgress": [
+                      {
+                        "cidrIp": "0.0.0.0/0",
+                        "description": "Allow all outbound traffic by default",
+                        "ipProtocol": "-1"
+                      }
+                    ],
+                    "securityGroupIngress": [
+                      {
+                        "cidrIp": "0.0.0.0/0",
+                        "ipProtocol": "-1",
+                        "description": "from 0.0.0.0/0:ALL TRAFFIC"
+                      }
+                    ],
+                    "vpcId": "vpc-05416f8b2c2f67d34"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ec2.CfnSecurityGroup",
+                  "version": "2.13.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_ec2.SecurityGroup",
+              "version": "2.13.0"
+            }
+          },
+          "apprunner-vpc-conn": {
+            "id": "apprunner-vpc-conn",
+            "path": "hello-apprunner/apprunner-vpc-conn",
+            "attributes": {
+              "aws:cdk:cloudformation:type": "AWS::AppRunner::VpcConnector",
+              "aws:cdk:cloudformation:props": {
+                "subnets": [
+                  "subnet-009f49bc4ad6502bd",
+                  "subnet-082d962743a6cb49c",
+                  "subnet-0b4bf8978daa4f6d4",
+                  "subnet-02879f70a57b276ab"
+                ],
+                "securityGroups": [
+                  {
+                    "Fn::GetAtt": [
+                      "sgvpcconnectorDAD61D5C",
+                      "GroupId"
+                    ]
+                  }
+                ],
+                "vpcConnectorName": "apprunner-vpc-connector"
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_apprunner.CfnVpcConnector",
+              "version": "2.13.0"
+            }
+          },
+          "apprunner-vpc-connector": {
+            "id": "apprunner-vpc-connector",
+            "path": "hello-apprunner/apprunner-vpc-connector",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.13.0"
+            }
+          },
+          "OnThisDate": {
+            "id": "OnThisDate",
+            "path": "hello-apprunner/OnThisDate",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "hello-apprunner/OnThisDate/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
+                  "aws:cdk:cloudformation:props": {
+                    "keySchema": [
+                      {
+                        "attributeName": "Day",
+                        "keyType": "HASH"
+                      },
+                      {
+                        "attributeName": "Title",
+                        "keyType": "RANGE"
+                      }
+                    ],
+                    "attributeDefinitions": [
+                      {
+                        "attributeName": "Day",
+                        "attributeType": "S"
+                      },
+                      {
+                        "attributeName": "Title",
+                        "attributeType": "S"
+                      }
+                    ],
+                    "billingMode": "PAY_PER_REQUEST",
+                    "tableName": "OnThisDate"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_dynamodb.CfnTable",
+                  "version": "2.13.0"
+                }
+              },
+              "ScalingRole": {
+                "id": "ScalingRole",
+                "path": "hello-apprunner/OnThisDate/ScalingRole",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.13.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_dynamodb.Table",
+              "version": "2.13.0"
+            }
+          },
+          "DynamoDB-OnThisDate": {
+            "id": "DynamoDB-OnThisDate",
+            "path": "hello-apprunner/DynamoDB-OnThisDate",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.13.0"
+            }
+          },
+          "dynamo-gateway-endpoint": {
+            "id": "dynamo-gateway-endpoint",
+            "path": "hello-apprunner/dynamo-gateway-endpoint",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.13.0"
+            }
+          },
+          "Recipe": {
+            "id": "Recipe",
+            "path": "hello-apprunner/Recipe",
+            "children": {
+              "ServiceAccessRole": {
+                "id": "ServiceAccessRole",
+                "path": "hello-apprunner/Recipe/ServiceAccessRole",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "hello-apprunner/Recipe/ServiceAccessRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "build.apprunner.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          "arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.13.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.13.0"
+                }
+              },
+              "ServiceAccessRoleManagedPolicy": {
+                "id": "ServiceAccessRoleManagedPolicy",
+                "path": "hello-apprunner/Recipe/ServiceAccessRoleManagedPolicy",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.13.0"
+                }
+              },
+              "TaskRole": {
+                "id": "TaskRole",
+                "path": "hello-apprunner/Recipe/TaskRole",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "hello-apprunner/Recipe/TaskRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "tasks.apprunner.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/AmazonDynamoDBFullAccess"
+                              ]
+                            ]
+                          },
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/AWSAppRunnerFullAccess"
+                              ]
+                            ]
+                          },
+                          {
+                            "Ref": "dynamodbonthisdate6EA1B04C"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.13.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.13.0"
+                }
+              },
+              "ECRRepository": {
+                "id": "ECRRepository",
+                "path": "hello-apprunner/Recipe/ECRRepository",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_ecr.RepositoryBase",
+                  "version": "2.13.0"
+                }
+              },
+              "AppRunnerService": {
+                "id": "AppRunnerService",
+                "path": "hello-apprunner/Recipe/AppRunnerService",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::AppRunner::Service",
+                  "aws:cdk:cloudformation:props": {
+                    "sourceConfiguration": {
+                      "authenticationConfiguration": {
+                        "accessRoleArn": {
+                          "Fn::GetAtt": [
+                            "RecipeServiceAccessRole3815C527",
+                            "Arn"
+                          ]
+                        }
+                      },
+                      "imageRepository": {
+                        "imageIdentifier": {
+                          "Fn::Join": [
+                            "",
+                            [
+                              "393840302653.dkr.ecr.us-west-2.",
+                              {
+                                "Ref": "AWS::URLSuffix"
+                              },
+                              "/hello-apprunner:637948119247856409"
+                            ]
+                          ]
+                        },
+                        "imageRepositoryType": "ECR",
+                        "imageConfiguration": {
+                          "port": "80"
+                        }
+                      }
+                    },
+                    "healthCheckConfiguration": {
+                      "healthyThreshold": 3,
+                      "interval": 5,
+                      "protocol": "TCP",
+                      "timeout": 2,
+                      "unhealthyThreshold": 3
+                    },
+                    "instanceConfiguration": {
+                      "cpu": "1024",
+                      "instanceRoleArn": {
+                        "Fn::GetAtt": [
+                          "RecipeTaskRoleA3C555E6",
+                          "Arn"
+                        ]
+                      },
+                      "memory": "2048"
+                    },
+                    "networkConfiguration": {
+                      "egressConfiguration": {
+                        "egressType": "VPC",
+                        "vpcConnectorArn": {
+                          "Fn::GetAtt": [
+                            "apprunnervpcconn",
+                            "VpcConnectorArn"
+                          ]
+                        }
+                      }
+                    },
+                    "serviceName": "hello-apprunner-service"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apprunner.CfnService",
+                  "version": "2.13.0"
+                }
+              },
+              "EndpointURL": {
+                "id": "EndpointURL",
+                "path": "hello-apprunner/Recipe/EndpointURL",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.13.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.0.0"
+            }
+          },
+          "dynamodb-on-this-date": {
+            "id": "dynamodb-on-this-date",
+            "path": "hello-apprunner/dynamodb-on-this-date",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "hello-apprunner/dynamodb-on-this-date/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::ManagedPolicy",
+                  "aws:cdk:cloudformation:props": {
+                    "policyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "dynamodb:*",
+                          "Effect": "Allow",
+                          "Resource": {
+                            "Fn::GetAtt": [
+                              "OnThisDate05C8EC1E",
+                              "Arn"
+                            ]
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    },
+                    "description": "",
+                    "managedPolicyName": "dynamodb-policy-on-this-date",
+                    "path": "/"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnManagedPolicy",
+                  "version": "2.13.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_iam.ManagedPolicy",
+              "version": "2.13.0"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "hello-apprunner/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "hello-apprunner/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.13.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.0.0"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.13.0"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.13.0"
+    }
+  }
+}

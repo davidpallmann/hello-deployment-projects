@@ -1,0 +1,7 @@
+{
+  "DeploymentProjects": [
+    {
+      "Path": "..\\hello-apprunner.Deployment"
+    }
+  ]
+}

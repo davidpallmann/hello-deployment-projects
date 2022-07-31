@@ -1,0 +1,352 @@
+{
+  "Description": "AWSDotnetDeployCDKStack",
+  "Metadata": {
+    "aws-dotnet-deploy-settings": "{\"ApplicationIAMRole\":{\"CreateNew\":true,\"RoleArn\":null},\"VPCConnector\":{\"CreateNew\":false,\"VpcConnectorId\":\"\",\"VpcId\":null,\"Subnets\":[],\"SecurityGroups\":[]},\"ServiceAccessIAMRole\":{\"CreateNew\":true,\"RoleArn\":null},\"ServiceName\":\"hello-apprunner-service\",\"Port\":80,\"StartCommand\":\"\",\"EncryptionKmsKey\":\"\",\"HealthCheckHealthyThreshold\":3,\"HealthCheckInterval\":5,\"HealthCheckPath\":\"\",\"HealthCheckProtocol\":\"TCP\",\"HealthCheckTimeout\":2,\"HealthCheckUnhealthyThreshold\":3,\"Cpu\":\"1024\",\"Memory\":\"2048\",\"AppRunnerEnvironmentVariables\":{}}",
+    "aws-dotnet-deploy-recipe-id": "55d616bf-3f6f-4e6c-9b08-881fd86fab92",
+    "aws-dotnet-deploy-recipe-version": "0.1.0"
+  },
+  "Resources": {
+    "defaultvpcdynamogatewayendpointAA4C3FD3": {
+      "Type": "AWS::EC2::VPCEndpoint",
+      "Properties": {
+        "ServiceName": {
+          "Fn::Join": [
+            "",
+            [
+              "com.amazonaws.",
+              {
+                "Ref": "AWS::Region"
+              },
+              ".dynamodb"
+            ]
+          ]
+        },
+        "VpcId": "vpc-05416f8b2c2f67d34",
+        "RouteTableIds": [
+          "rtb-09d065688b8576262"
+        ],
+        "VpcEndpointType": "Gateway"
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner/default-vpc/dynamo-gateway-endpoint/Resource"
+      }
+    },
+    "sgvpcconnectorDAD61D5C": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "hello-apprunner/sg-vpc-connector",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1"
+          }
+        ],
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "from 0.0.0.0/0:ALL TRAFFIC",
+            "IpProtocol": "-1"
+          }
+        ],
+        "VpcId": "vpc-05416f8b2c2f67d34"
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner/sg-vpc-connector/Resource"
+      }
+    },
+    "apprunnervpcconn": {
+      "Type": "AWS::AppRunner::VpcConnector",
+      "Properties": {
+        "Subnets": [
+          "subnet-009f49bc4ad6502bd",
+          "subnet-082d962743a6cb49c",
+          "subnet-0b4bf8978daa4f6d4",
+          "subnet-02879f70a57b276ab"
+        ],
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "sgvpcconnectorDAD61D5C",
+              "GroupId"
+            ]
+          }
+        ],
+        "VpcConnectorName": "apprunner-vpc-connector"
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner/apprunner-vpc-conn"
+      }
+    },
+    "OnThisDate05C8EC1E": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "KeySchema": [
+          {
+            "AttributeName": "Day",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "Title",
+            "KeyType": "RANGE"
+          }
+        ],
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "Day",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "Title",
+            "AttributeType": "S"
+          }
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "TableName": "OnThisDate"
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner/OnThisDate/Resource"
+      }
+    },
+    "RecipeServiceAccessRole3815C527": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "build.apprunner.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner/Recipe/ServiceAccessRole/Resource"
+      }
+    },
+    "RecipeTaskRoleA3C555E6": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "tasks.apprunner.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/AmazonDynamoDBFullAccess"
+              ]
+            ]
+          },
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/AWSAppRunnerFullAccess"
+              ]
+            ]
+          },
+          {
+            "Ref": "dynamodbonthisdate6EA1B04C"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner/Recipe/TaskRole/Resource"
+      }
+    },
+    "RecipeAppRunnerServiceDA9A12DF": {
+      "Type": "AWS::AppRunner::Service",
+      "Properties": {
+        "SourceConfiguration": {
+          "AuthenticationConfiguration": {
+            "AccessRoleArn": {
+              "Fn::GetAtt": [
+                "RecipeServiceAccessRole3815C527",
+                "Arn"
+              ]
+            }
+          },
+          "ImageRepository": {
+            "ImageConfiguration": {
+              "Port": "80"
+            },
+            "ImageIdentifier": {
+              "Fn::Join": [
+                "",
+                [
+                  "393840302653.dkr.ecr.us-west-2.",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  },
+                  "/hello-apprunner:637948119247856409"
+                ]
+              ]
+            },
+            "ImageRepositoryType": "ECR"
+          }
+        },
+        "HealthCheckConfiguration": {
+          "HealthyThreshold": 3,
+          "Interval": 5,
+          "Protocol": "TCP",
+          "Timeout": 2,
+          "UnhealthyThreshold": 3
+        },
+        "InstanceConfiguration": {
+          "Cpu": "1024",
+          "InstanceRoleArn": {
+            "Fn::GetAtt": [
+              "RecipeTaskRoleA3C555E6",
+              "Arn"
+            ]
+          },
+          "Memory": "2048"
+        },
+        "NetworkConfiguration": {
+          "EgressConfiguration": {
+            "EgressType": "VPC",
+            "VpcConnectorArn": {
+              "Fn::GetAtt": [
+                "apprunnervpcconn",
+                "VpcConnectorArn"
+              ]
+            }
+          }
+        },
+        "ServiceName": "hello-apprunner-service"
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner/Recipe/AppRunnerService"
+      }
+    },
+    "dynamodbonthisdate6EA1B04C": {
+      "Type": "AWS::IAM::ManagedPolicy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "dynamodb:*",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "OnThisDate05C8EC1E",
+                  "Arn"
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "Description": "",
+        "ManagedPolicyName": "dynamodb-policy-on-this-date",
+        "Path": "/"
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner/dynamodb-on-this-date/Resource"
+      }
+    },
+    "CDKMetadata": {
+      "Type": "AWS::CDK::Metadata",
+      "Properties": {
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/1VPy2rDQAz8ltzXcuJAbz20bsipaXCCr2Ujq0WNvVr2kWCM/71rmxaCDiPN6DEqYLOF9UrffYbNNWv5AsMpaLyqirxEh6SS9jkQFjDsdaC77muLO9NYYRNU+WXqY/lfngij49DvnUQ7iQ/EqLS1LhpDDoZp0mIpqcIgbml2N0YaVdMb3UmTvJz1paVJm5NRse5gqGThZnzXRn9Tc5SWsZ/YB2JUhA4qsuI5XelftU9bUtdHDDbO/v8eHdWbhAOFfAsbKJ5yOOzOpTh6sTaryXkW83xLWr6B9RSrH8+cpXcCdwTVgr/3+PhGUAEAAA=="
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner/CDKMetadata/Default"
+      }
+    }
+  },
+  "Outputs": {
+    "apprunnervpcconnector": {
+      "Value": "apprunnervpcconn"
+    },
+    "DynamoDBOnThisDate": {
+      "Value": {
+        "Ref": "OnThisDate05C8EC1E"
+      }
+    },
+    "dynamogatewayendpoint": {
+      "Value": {
+        "Ref": "defaultvpcdynamogatewayendpointAA4C3FD3"
+      }
+    },
+    "RecipeEndpointURL20D2E3A7": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {
+              "Fn::GetAtt": [
+                "RecipeAppRunnerServiceDA9A12DF",
+                "ServiceUrl"
+              ]
+            },
+            "/"
+          ]
+        ]
+      }
+    }
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Type": "AWS::SSM::Parameter::Value<String>",
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+    }
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5"
+                  ],
+                  {
+                    "Ref": "BootstrapVersion"
+                  }
+                ]
+              }
+            ]
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+        }
+      ]
+    }
+  }
+}

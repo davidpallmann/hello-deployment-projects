@@ -1,0 +1,20 @@
+{
+  "version": "16.0.0",
+  "files": {
+    "df8538733274a3d526f2c90dda7eaa9f26ad344c4bf2cb1dbf3f15e02bb390ac": {
+      "source": {
+        "path": "hello-apprunner-dynamo.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "393840302653-us-east-1": {
+          "bucketName": "cdk-hnb659fds-assets-393840302653-us-east-1",
+          "objectKey": "df8538733274a3d526f2c90dda7eaa9f26ad344c4bf2cb1dbf3f15e02bb390ac.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::393840302653:role/cdk-hnb659fds-file-publishing-role-393840302653-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

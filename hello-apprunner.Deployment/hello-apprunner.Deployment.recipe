@@ -1,0 +1,484 @@
+{
+  "Id": "55d616bf-3f6f-4e6c-9b08-881fd86fab92",
+  "Version": "0.1.0",
+  "Name": "Deployment project for hello-apprunner to AWS App Runner",
+  "DisableNewDeployments": false,
+  "Description": "This ASP.NET Core application will be built as a container image and deployed to AWS App Runner. If your project does not contain a Dockerfile, it will be automatically generated. Recommended if you want to deploy your application as a container image on a fully managed environment.",
+  "ShortDescription": "ASP.NET Core application deployed to AWS App Runner",
+  "TargetService": "AWS App Runner",
+  "DisplayedResources": [
+    {
+      "LogicalId": "RecipeAppRunnerServiceDA9A12DF",
+      "Description": "Application Endpoint"
+    }
+  ],
+  "DeploymentType": "CdkProject",
+  "DeploymentBundle": "Container",
+  "RecommendationRules": [
+    {
+      "Tests": [
+        {
+          "Type": "MSProjectSdkAttribute",
+          "Condition": {
+            "Value": "Microsoft.NET.Sdk.Web"
+          }
+        },
+        {
+          "Type": "MSProperty",
+          "Condition": {
+            "PropertyName": "TargetFramework",
+            "AllowedValues": [
+              "netcoreapp2.1",
+              "netcoreapp3.1",
+              "net5.0",
+              "net6.0"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "Tests": [
+        {
+          "Type": "MSPropertyExists",
+          "Condition": {
+            "PropertyName": "AWSProjectType"
+          }
+        }
+      ],
+      "Effect": {
+        "Pass": {
+          "Include": false
+        },
+        "Fail": {
+          "Include": true
+        }
+      }
+    }
+  ],
+  "OptionSettings": [
+    {
+      "Id": "ServiceName",
+      "Name": "Service Name",
+      "Description": "The name of the AWS App Runner service.",
+      "Type": "String",
+      "TypeHint": "AppRunnerService",
+      "DefaultValue": "{StackName}-service",
+      "AdvancedSetting": false,
+      "Updatable": false,
+      "Validators": [
+        {
+          "ValidatorType": "Regex",
+          "Configuration": {
+            "Regex": "^([A-Za-z0-9][A-Za-z0-9_-]{3,39})$",
+            "ValidationFailedMessage": "Invalid service name. The service name must be between 4 and 40 characters in length and can contain uppercase and lowercase letters, numbers, hyphen(-) and underscore(_). It must start with a letter or a number."
+          }
+        }
+      ]
+    },
+    {
+      "Id": "Port",
+      "Name": "Port",
+      "Description": "The port the container is listening for requests on.",
+      "Type": "Int",
+      "DefaultValue": 80,
+      "AdvancedSetting": false,
+      "Updatable": true,
+      "Validators": [
+        {
+          "ValidatorType": "Range",
+          "Configuration": {
+            "Min": 0,
+            "Max": 51200
+          }
+        }
+      ]
+    },
+    {
+      "Id": "StartCommand",
+      "Name": "Start Command",
+      "Description": "Override the start command from the image's default start command.",
+      "Type": "String",
+      "AdvancedSetting": true,
+      "Updatable": true
+    },
+    {
+      "Id": "ApplicationIAMRole",
+      "Name": "Application IAM Role",
+      "Description": "The Identity and Access Management (IAM) role that provides AWS credentials to the application to access AWS services.",
+      "Type": "Object",
+      "TypeHint": "IAMRole",
+      "AdvancedSetting": false,
+      "Updatable": true,
+      "ChildOptionSettings": [
+        {
+          "Id": "CreateNew",
+          "Name": "Create New Role",
+          "Description": "Do you want to create a new role?",
+          "Type": "Bool",
+          "DefaultValue": true,
+          "AdvancedSetting": false,
+          "Updatable": true
+        },
+        {
+          "Id": "RoleArn",
+          "Name": "Existing Role ARN",
+          "Description": "The ARN of the existing role to use.",
+          "Type": "String",
+          "TypeHint": "ExistingIAMRole",
+          "AdvancedSetting": false,
+          "Updatable": true,
+          "Validators": [
+            {
+              "ValidatorType": "Regex",
+              "Configuration": {
+                "Regex": "arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):iam::[0-9]{12}:(role|role/service-role)/[\\w+=,.@\\-/]{1,1000}",
+                "AllowEmptyString": true,
+                "ValidationFailedMessage": "Invalid IAM Role ARN. The ARN should contain the arn:[PARTITION]:iam namespace, followed by the account ID, and then the resource path. For example - arn:aws:iam::123456789012:role/S3Access is a valid IAM Role ARN. For more information visit https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apprunner-service-authenticationconfiguration.html"
+              }
+            }
+          ],
+          "DependsOn": [
+            {
+              "Id": "ApplicationIAMRole.CreateNew",
+              "Value": false
+            }
+          ],
+          "TypeHintData": {
+            "ServicePrincipal": "tasks.apprunner.amazonaws.com"
+          }
+        }
+      ],
+      "TypeHintData": {
+        "ServicePrincipal": "tasks.apprunner.amazonaws.com"
+      }
+    },
+    {
+      "Id": "ServiceAccessIAMRole",
+      "Name": "Service Access IAM Role",
+      "Description": "The Identity and Access Management (IAM) role that provides gives the AWS App Runner service access to pull the container image from ECR.",
+      "Type": "Object",
+      "TypeHint": "IAMRole",
+      "AdvancedSetting": true,
+      "Updatable": true,
+      "ChildOptionSettings": [
+        {
+          "Id": "CreateNew",
+          "Name": "Create New Role",
+          "Description": "Do you want to create a new role?",
+          "Type": "Bool",
+          "DefaultValue": true,
+          "AdvancedSetting": false,
+          "Updatable": true
+        },
+        {
+          "Id": "RoleArn",
+          "Name": "Existing Role ARN",
+          "Description": "The ARN of the existing role to use.",
+          "Type": "String",
+          "TypeHint": "ExistingIAMRole",
+          "AdvancedSetting": false,
+          "Updatable": true,
+          "Validators": [
+            {
+              "ValidatorType": "Regex",
+              "Configuration": {
+                "Regex": "arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):iam::[0-9]{12}:(role|role/service-role)/[\\w+=,.@\\-/]{1,1000}",
+                "AllowEmptyString": true,
+                "ValidationFailedMessage": "Invalid IAM Role ARN. The ARN should contain the arn:[PARTITION]:iam namespace, followed by the account ID, and then the resource path. For example - arn:aws:iam::123456789012:role/S3Access is a valid IAM Role ARN. For more information visit https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apprunner-service-authenticationconfiguration.html"
+              }
+            }
+          ],
+          "DependsOn": [
+            {
+              "Id": "ServiceAccessIAMRole.CreateNew",
+              "Value": false
+            }
+          ],
+          "TypeHintData": {
+            "ServicePrincipal": "build.apprunner.amazonaws.com"
+          }
+        }
+      ],
+      "TypeHintData": {
+        "ServicePrincipal": "build.apprunner.amazonaws.com"
+      }
+    },
+    {
+      "Id": "Cpu",
+      "Name": "CPU",
+      "Description": "The number of CPU units reserved for each instance of your App Runner service.",
+      "Type": "String",
+      "DefaultValue": "1024",
+      "AdvancedSetting": false,
+      "Updatable": true,
+      "AllowedValues": [
+        "1024",
+        "2048"
+      ],
+      "ValueMapping": {
+        "1024": "1 vCPU",
+        "2048": "2 vCPU"
+      }
+    },
+    {
+      "Id": "Memory",
+      "Name": "Memory",
+      "Description": "The amount of memory reserved for each instance of your App Runner service.",
+      "Type": "String",
+      "DefaultValue": "2048",
+      "AdvancedSetting": false,
+      "Updatable": true,
+      "AllowedValues": [
+        "2048",
+        "3072",
+        "4096"
+      ],
+      "ValueMapping": {
+        "2048": "2 GB",
+        "3072": "3 GB",
+        "4096": "4 GB"
+      }
+    },
+    {
+      "Id": "EncryptionKmsKey",
+      "Name": "Encryption KMS Key",
+      "Description": "The ARN of the KMS key that's used for encryption of application logs.",
+      "Type": "String",
+      "AdvancedSetting": true,
+      "Updatable": false,
+      "Validators": [
+        {
+          "ValidatorType": "Regex",
+          "Configuration": {
+            "Regex": "arn:aws(-[\\w]+)*:kms:[a-z\\-]+-[0-9]{1}:[0-9]{12}:key/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+            "AllowEmptyString": true,
+            "ValidationFailedMessage": "Invalid KMS key ARN. The ARN should contain the arn:[PARTITION]:kms namespace, followed by the region, account ID, and then the key-id. For example - arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab is a valid KMS key ARN. For more information visit https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apprunner-service-encryptionconfiguration.html"
+          }
+        }
+      ]
+    },
+    {
+      "Id": "HealthCheckProtocol",
+      "Name": "Health Check Protocol",
+      "Description": "The IP protocol that App Runner uses to perform health checks for your service.",
+      "Type": "String",
+      "DefaultValue": "TCP",
+      "AdvancedSetting": true,
+      "Updatable": true,
+      "AllowedValues": [
+        "HTTP",
+        "TCP"
+      ]
+    },
+    {
+      "Id": "HealthCheckPath",
+      "Name": "Health Check Path",
+      "Description": "The URL that health check requests are sent to.",
+      "Type": "String",
+      "AdvancedSetting": true,
+      "Updatable": true,
+      "DependsOn": [
+        {
+          "Id": "HealthCheckProtocol",
+          "Value": "HTTP"
+        }
+      ]
+    },
+    {
+      "Id": "HealthCheckInterval",
+      "Name": "Health Check Interval",
+      "Description": "The time interval, in seconds, between health checks.",
+      "Type": "Int",
+      "DefaultValue": 5,
+      "AdvancedSetting": true,
+      "Updatable": true,
+      "Validators": [
+        {
+          "ValidatorType": "Range",
+          "Configuration": {
+            "Min": 1,
+            "Max": 20
+          }
+        }
+      ]
+    },
+    {
+      "Id": "HealthCheckTimeout",
+      "Name": "Health Check Timeout",
+      "Description": "The time, in seconds, to wait for a health check response before deciding it failed.",
+      "Type": "Int",
+      "DefaultValue": 2,
+      "AdvancedSetting": true,
+      "Updatable": true,
+      "Validators": [
+        {
+          "ValidatorType": "Range",
+          "Configuration": {
+            "Min": 1,
+            "Max": 20
+          }
+        }
+      ]
+    },
+    {
+      "Id": "HealthCheckHealthyThreshold",
+      "Name": "Health Check Healthy Threshold",
+      "Description": "The number of consecutive checks that must succeed before App Runner decides that the service is healthy.",
+      "Type": "Int",
+      "DefaultValue": 3,
+      "AdvancedSetting": true,
+      "Updatable": true,
+      "Validators": [
+        {
+          "ValidatorType": "Range",
+          "Configuration": {
+            "Min": 1,
+            "Max": 20
+          }
+        }
+      ]
+    },
+    {
+      "Id": "HealthCheckUnhealthyThreshold",
+      "Name": "Health Check Unhealthy Threshold",
+      "Description": "The number of consecutive checks that must fail before App Runner decides that the service is unhealthy.",
+      "Type": "Int",
+      "DefaultValue": 3,
+      "AdvancedSetting": true,
+      "Updatable": true,
+      "Validators": [
+        {
+          "ValidatorType": "Range",
+          "Configuration": {
+            "Min": 1,
+            "Max": 20
+          }
+        }
+      ]
+    },
+    {
+      "Id": "VPCConnector",
+      "Name": "VPC Connector",
+      "Description": "App Runner requires this resource when you want to associate your App Runner service to a custom Amazon Virtual Private Cloud (Amazon VPC).",
+      "Type": "Object",
+      "TypeHint": "VPCConnector",
+      "AdvancedSetting": true,
+      "Updatable": true,
+      "ChildOptionSettings": [
+        {
+          "Id": "CreateNew",
+          "Name": "Create New VPC Connector",
+          "Description": "Do you want to create a new VPC Connector?",
+          "Type": "Bool",
+          "DefaultValue": false,
+          "AdvancedSetting": false,
+          "Updatable": true
+        },
+        {
+          "Id": "VpcConnectorId",
+          "Name": "Existing VPC Connector ID",
+          "Description": "The ID of the existing VPC Connector to use.",
+          "Type": "String",
+          "TypeHint": "ExistingVpcConnector",
+          "AdvancedSetting": false,
+          "Updatable": true,
+          "DependsOn": [
+            {
+              "Id": "VPCConnector.CreateNew",
+              "Value": false
+            }
+          ]
+        },
+        {
+          "Id": "VpcId",
+          "Name": "VPC ID",
+          "Description": "A list of VPC IDs that App Runner should use when it associates your service with a custom Amazon VPC.",
+          "Type": "String",
+          "TypeHint": "ExistingVpc",
+          "AdvancedSetting": false,
+          "Updatable": true,
+          "Validators": [
+            {
+              "ValidatorType": "Regex",
+              "Configuration": {
+                "Regex": "^vpc-([0-9a-f]{8}|[0-9a-f]{17})$",
+                "AllowEmptyString": true,
+                "ValidationFailedMessage": "Invalid VPC ID. The VPC ID must start with the \"vpc-\" prefix, followed by either 8 or 17 characters consisting of digits and letters(lower-case) from a to f. For example vpc-abc88de9 is a valid VPC ID."
+              }
+            }
+          ],
+          "DependsOn": [
+            {
+              "Id": "VPCConnector.CreateNew",
+              "Value": true
+            }
+          ]
+        },
+        {
+          "Id": "Subnets",
+          "ParentSettingId": "VPCConnector.VpcId",
+          "Name": "Subnets",
+          "Description": "A list of IDs of subnets that App Runner should use when it associates your service with a custom Amazon VPC. Specify IDs of subnets of a single Amazon VPC. App Runner determines the Amazon VPC from the subnets you specify.",
+          "Type": "List",
+          "TypeHint": "ExistingSubnets",
+          "AdvancedSetting": false,
+          "Updatable": true,
+          "Validators": [
+            {
+              "ValidatorType": "Regex",
+              "Configuration": {
+                "Regex": "^subnet-([0-9a-f]{8}|[0-9a-f]{17})$",
+                "AllowEmptyString": true,
+                "ValidationFailedMessage": "Invalid Subnet ID. The Subnet ID must start with the \"subnet-\" prefix, followed by either 8 or 17 characters consisting of digits and letters(lower-case) from a to f. For example subnet-abc88de9 is a valid Subnet ID."
+              }
+            }
+          ],
+          "DependsOn": [
+            {
+              "Id": "VPCConnector.CreateNew",
+              "Value": true
+            }
+          ]
+        },
+        {
+          "Id": "SecurityGroups",
+          "ParentSettingId": "VPCConnector.VpcId",
+          "Name": "SecurityGroups",
+          "Description": "A list of IDs of security groups that App Runner should use for access to AWS resources under the specified subnets. If not specified, App Runner uses the default security group of the Amazon VPC. The default security group allows all outbound traffic.",
+          "Type": "List",
+          "TypeHint": "ExistingSecurityGroups",
+          "AdvancedSetting": false,
+          "Updatable": true,
+          "Validators": [
+            {
+              "ValidatorType": "Regex",
+              "Configuration": {
+                "Regex": "^sg-([0-9a-f]{8}|[0-9a-f]{17})$",
+                "AllowEmptyString": true,
+                "ValidationFailedMessage": "Invalid Security Group ID. The Security Group ID must start with the \"sg-\" prefix, followed by either 8 or 17 characters consisting of digits and letters(lower-case) from a to f. For example sg-abc88de9 is a valid Security Group ID."
+              }
+            }
+          ],
+          "DependsOn": [
+            {
+              "Id": "VPCConnector.CreateNew",
+              "Value": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Id": "AppRunnerEnvironmentVariables",
+      "Name": "Environment Variables",
+      "Description": "Configure environment properties for your application.",
+      "Type": "KeyValue",
+      "AdvancedSetting": false,
+      "Updatable": true
+    }
+  ],
+  "RecipePriority": 1000,
+  "PersistedDeploymentProject": true,
+  "BaseRecipeId": "AspNetAppAppRunner"
+}

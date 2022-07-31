@@ -1,0 +1,20 @@
+{
+  "version": "16.0.0",
+  "files": {
+    "035d98721d7b724b35bacb881304f799a12b645f6c93e27484c2bb2da169c9eb": {
+      "source": {
+        "path": "hello-apprunner.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "393840302653-us-west-2": {
+          "bucketName": "cdk-hnb659fds-assets-393840302653-us-west-2",
+          "objectKey": "035d98721d7b724b35bacb881304f799a12b645f6c93e27484c2bb2da169c9eb.json",
+          "region": "us-west-2",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::393840302653:role/cdk-hnb659fds-file-publishing-role-393840302653-us-west-2"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

@@ -1,0 +1,894 @@
+{
+  "Description": "AWSDotnetDeployCDKStack",
+  "Metadata": {
+    "aws-dotnet-deploy-settings": "{\"ApplicationIAMRole\":{\"CreateNew\":true,\"RoleArn\":null},\"VPCConnector\":{\"CreateNew\":false,\"VpcConnectorId\":\"\",\"VpcId\":null,\"Subnets\":[],\"SecurityGroups\":[]},\"ServiceAccessIAMRole\":{\"CreateNew\":true,\"RoleArn\":null},\"ServiceName\":\"hello-apprunner-dynamo-service\",\"Port\":80,\"StartCommand\":\"\",\"EncryptionKmsKey\":\"\",\"HealthCheckHealthyThreshold\":3,\"HealthCheckInterval\":5,\"HealthCheckPath\":\"\",\"HealthCheckProtocol\":\"TCP\",\"HealthCheckTimeout\":2,\"HealthCheckUnhealthyThreshold\":3,\"Cpu\":\"1024\",\"Memory\":\"2048\",\"AppRunnerEnvironmentVariables\":{}}",
+    "aws-dotnet-deploy-recipe-id": "55d616bf-3f6f-4e6c-9b08-881fd86fab92",
+    "aws-dotnet-deploy-recipe-version": "0.1.0"
+  },
+  "Resources": {
+    "dynamovpcD91AD32A": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "hello-apprunner-dynamo/dynamo-vpc"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/Resource"
+      }
+    },
+    "dynamovpcpublicsubnetSubnet1Subnet26C1D3AC": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.0.0.0/24",
+        "VpcId": {
+          "Ref": "dynamovpcD91AD32A"
+        },
+        "AvailabilityZone": "us-east-1a",
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "public-subnet"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public"
+          },
+          {
+            "Key": "Name",
+            "Value": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet1/Subnet"
+      }
+    },
+    "dynamovpcpublicsubnetSubnet1RouteTableB015B72D": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "dynamovpcD91AD32A"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet1/RouteTable"
+      }
+    },
+    "dynamovpcpublicsubnetSubnet1RouteTableAssociation9BF5FEB9": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "dynamovpcpublicsubnetSubnet1RouteTableB015B72D"
+        },
+        "SubnetId": {
+          "Ref": "dynamovpcpublicsubnetSubnet1Subnet26C1D3AC"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet1/RouteTableAssociation"
+      }
+    },
+    "dynamovpcpublicsubnetSubnet1DefaultRouteD5C01FF8": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "dynamovpcpublicsubnetSubnet1RouteTableB015B72D"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "dynamovpcIGW5A7468CE"
+        }
+      },
+      "DependsOn": [
+        "dynamovpcVPCGWD46AA80D"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet1/DefaultRoute"
+      }
+    },
+    "dynamovpcpublicsubnetSubnet1EIP0B687FE3": {
+      "Type": "AWS::EC2::EIP",
+      "Properties": {
+        "Domain": "vpc",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet1/EIP"
+      }
+    },
+    "dynamovpcpublicsubnetSubnet1NATGateway63F15784": {
+      "Type": "AWS::EC2::NatGateway",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "dynamovpcpublicsubnetSubnet1Subnet26C1D3AC"
+        },
+        "AllocationId": {
+          "Fn::GetAtt": [
+            "dynamovpcpublicsubnetSubnet1EIP0B687FE3",
+            "AllocationId"
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet1/NATGateway"
+      }
+    },
+    "dynamovpcpublicsubnetSubnet2Subnet85437DED": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.0.1.0/24",
+        "VpcId": {
+          "Ref": "dynamovpcD91AD32A"
+        },
+        "AvailabilityZone": "us-east-1b",
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "public-subnet"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public"
+          },
+          {
+            "Key": "Name",
+            "Value": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet2/Subnet"
+      }
+    },
+    "dynamovpcpublicsubnetSubnet2RouteTableA19A3E25": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "dynamovpcD91AD32A"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet2/RouteTable"
+      }
+    },
+    "dynamovpcpublicsubnetSubnet2RouteTableAssociationF3D4DC52": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "dynamovpcpublicsubnetSubnet2RouteTableA19A3E25"
+        },
+        "SubnetId": {
+          "Ref": "dynamovpcpublicsubnetSubnet2Subnet85437DED"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet2/RouteTableAssociation"
+      }
+    },
+    "dynamovpcpublicsubnetSubnet2DefaultRoute22D3E603": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "dynamovpcpublicsubnetSubnet2RouteTableA19A3E25"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "dynamovpcIGW5A7468CE"
+        }
+      },
+      "DependsOn": [
+        "dynamovpcVPCGWD46AA80D"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet2/DefaultRoute"
+      }
+    },
+    "dynamovpcpublicsubnetSubnet2EIP71E396BE": {
+      "Type": "AWS::EC2::EIP",
+      "Properties": {
+        "Domain": "vpc",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet2/EIP"
+      }
+    },
+    "dynamovpcpublicsubnetSubnet2NATGateway4C09E40D": {
+      "Type": "AWS::EC2::NatGateway",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "dynamovpcpublicsubnetSubnet2Subnet85437DED"
+        },
+        "AllocationId": {
+          "Fn::GetAtt": [
+            "dynamovpcpublicsubnetSubnet2EIP71E396BE",
+            "AllocationId"
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet2/NATGateway"
+      }
+    },
+    "dynamovpcpublicsubnetSubnet3SubnetC02DA33E": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.0.2.0/24",
+        "VpcId": {
+          "Ref": "dynamovpcD91AD32A"
+        },
+        "AvailabilityZone": "us-east-1c",
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "public-subnet"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public"
+          },
+          {
+            "Key": "Name",
+            "Value": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet3"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet3/Subnet"
+      }
+    },
+    "dynamovpcpublicsubnetSubnet3RouteTableB7D829A7": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "dynamovpcD91AD32A"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet3"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet3/RouteTable"
+      }
+    },
+    "dynamovpcpublicsubnetSubnet3RouteTableAssociationD5F5230C": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "dynamovpcpublicsubnetSubnet3RouteTableB7D829A7"
+        },
+        "SubnetId": {
+          "Ref": "dynamovpcpublicsubnetSubnet3SubnetC02DA33E"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet3/RouteTableAssociation"
+      }
+    },
+    "dynamovpcpublicsubnetSubnet3DefaultRouteE362D073": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "dynamovpcpublicsubnetSubnet3RouteTableB7D829A7"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "dynamovpcIGW5A7468CE"
+        }
+      },
+      "DependsOn": [
+        "dynamovpcVPCGWD46AA80D"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet3/DefaultRoute"
+      }
+    },
+    "dynamovpcpublicsubnetSubnet3EIPF0839056": {
+      "Type": "AWS::EC2::EIP",
+      "Properties": {
+        "Domain": "vpc",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet3"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet3/EIP"
+      }
+    },
+    "dynamovpcpublicsubnetSubnet3NATGateway5D0ECFD5": {
+      "Type": "AWS::EC2::NatGateway",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "dynamovpcpublicsubnetSubnet3SubnetC02DA33E"
+        },
+        "AllocationId": {
+          "Fn::GetAtt": [
+            "dynamovpcpublicsubnetSubnet3EIPF0839056",
+            "AllocationId"
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet3"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/public-subnetSubnet3/NATGateway"
+      }
+    },
+    "dynamovpcprivatesubnetSubnet1Subnet7965C2B1": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.0.3.0/24",
+        "VpcId": {
+          "Ref": "dynamovpcD91AD32A"
+        },
+        "AvailabilityZone": "us-east-1a",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "private-subnet"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private"
+          },
+          {
+            "Key": "Name",
+            "Value": "hello-apprunner-dynamo/dynamo-vpc/private-subnetSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/private-subnetSubnet1/Subnet"
+      }
+    },
+    "dynamovpcprivatesubnetSubnet1RouteTable92C33189": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "dynamovpcD91AD32A"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "hello-apprunner-dynamo/dynamo-vpc/private-subnetSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/private-subnetSubnet1/RouteTable"
+      }
+    },
+    "dynamovpcprivatesubnetSubnet1RouteTableAssociation41311264": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "dynamovpcprivatesubnetSubnet1RouteTable92C33189"
+        },
+        "SubnetId": {
+          "Ref": "dynamovpcprivatesubnetSubnet1Subnet7965C2B1"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/private-subnetSubnet1/RouteTableAssociation"
+      }
+    },
+    "dynamovpcprivatesubnetSubnet1DefaultRoute89D25AA6": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "dynamovpcprivatesubnetSubnet1RouteTable92C33189"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "dynamovpcpublicsubnetSubnet1NATGateway63F15784"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/private-subnetSubnet1/DefaultRoute"
+      }
+    },
+    "dynamovpcprivatesubnetSubnet2Subnet646B24D8": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.0.4.0/24",
+        "VpcId": {
+          "Ref": "dynamovpcD91AD32A"
+        },
+        "AvailabilityZone": "us-east-1b",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "private-subnet"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private"
+          },
+          {
+            "Key": "Name",
+            "Value": "hello-apprunner-dynamo/dynamo-vpc/private-subnetSubnet2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/private-subnetSubnet2/Subnet"
+      }
+    },
+    "dynamovpcprivatesubnetSubnet2RouteTable7292377E": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "dynamovpcD91AD32A"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "hello-apprunner-dynamo/dynamo-vpc/private-subnetSubnet2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/private-subnetSubnet2/RouteTable"
+      }
+    },
+    "dynamovpcprivatesubnetSubnet2RouteTableAssociation41957549": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "dynamovpcprivatesubnetSubnet2RouteTable7292377E"
+        },
+        "SubnetId": {
+          "Ref": "dynamovpcprivatesubnetSubnet2Subnet646B24D8"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/private-subnetSubnet2/RouteTableAssociation"
+      }
+    },
+    "dynamovpcprivatesubnetSubnet2DefaultRouteE5780346": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "dynamovpcprivatesubnetSubnet2RouteTable7292377E"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "dynamovpcpublicsubnetSubnet2NATGateway4C09E40D"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/private-subnetSubnet2/DefaultRoute"
+      }
+    },
+    "dynamovpcprivatesubnetSubnet3Subnet30505F28": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.0.5.0/24",
+        "VpcId": {
+          "Ref": "dynamovpcD91AD32A"
+        },
+        "AvailabilityZone": "us-east-1c",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "private-subnet"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private"
+          },
+          {
+            "Key": "Name",
+            "Value": "hello-apprunner-dynamo/dynamo-vpc/private-subnetSubnet3"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/private-subnetSubnet3/Subnet"
+      }
+    },
+    "dynamovpcprivatesubnetSubnet3RouteTableC04B7FDE": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "dynamovpcD91AD32A"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "hello-apprunner-dynamo/dynamo-vpc/private-subnetSubnet3"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/private-subnetSubnet3/RouteTable"
+      }
+    },
+    "dynamovpcprivatesubnetSubnet3RouteTableAssociationD0646B91": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "dynamovpcprivatesubnetSubnet3RouteTableC04B7FDE"
+        },
+        "SubnetId": {
+          "Ref": "dynamovpcprivatesubnetSubnet3Subnet30505F28"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/private-subnetSubnet3/RouteTableAssociation"
+      }
+    },
+    "dynamovpcprivatesubnetSubnet3DefaultRoute8AE2AD35": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "dynamovpcprivatesubnetSubnet3RouteTableC04B7FDE"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "dynamovpcpublicsubnetSubnet3NATGateway5D0ECFD5"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/private-subnetSubnet3/DefaultRoute"
+      }
+    },
+    "dynamovpcIGW5A7468CE": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "hello-apprunner-dynamo/dynamo-vpc"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/IGW"
+      }
+    },
+    "dynamovpcVPCGWD46AA80D": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {
+          "Ref": "dynamovpcD91AD32A"
+        },
+        "InternetGatewayId": {
+          "Ref": "dynamovpcIGW5A7468CE"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/VPCGW"
+      }
+    },
+    "dynamovpcdynamogatewayendpoint692507D6": {
+      "Type": "AWS::EC2::VPCEndpoint",
+      "Properties": {
+        "ServiceName": {
+          "Fn::Join": [
+            "",
+            [
+              "com.amazonaws.",
+              {
+                "Ref": "AWS::Region"
+              },
+              ".dynamodb"
+            ]
+          ]
+        },
+        "VpcId": {
+          "Ref": "dynamovpcD91AD32A"
+        },
+        "RouteTableIds": [
+          {
+            "Ref": "dynamovpcprivatesubnetSubnet1RouteTable92C33189"
+          },
+          {
+            "Ref": "dynamovpcprivatesubnetSubnet2RouteTable7292377E"
+          },
+          {
+            "Ref": "dynamovpcprivatesubnetSubnet3RouteTableC04B7FDE"
+          },
+          {
+            "Ref": "dynamovpcpublicsubnetSubnet1RouteTableB015B72D"
+          },
+          {
+            "Ref": "dynamovpcpublicsubnetSubnet2RouteTableA19A3E25"
+          },
+          {
+            "Ref": "dynamovpcpublicsubnetSubnet3RouteTableB7D829A7"
+          }
+        ],
+        "VpcEndpointType": "Gateway"
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/dynamo-vpc/dynamo-gateway-endpoint/Resource"
+      }
+    },
+    "apprunnervpcconnector": {
+      "Type": "AWS::AppRunner::VpcConnector",
+      "Properties": {
+        "Subnets": [
+          {
+            "Ref": "dynamovpcprivatesubnetSubnet1Subnet7965C2B1"
+          }
+        ],
+        "VpcConnectorName": "apprunner-vpc-connector"
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/apprunner-vpc-connector"
+      }
+    },
+    "OnThisDate05C8EC1E": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "KeySchema": [
+          {
+            "AttributeName": "Id",
+            "KeyType": "HASH"
+          }
+        ],
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "Id",
+            "AttributeType": "S"
+          }
+        ],
+        "BillingMode": "PAY_PER_REQUEST"
+      },
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/OnThisDate/Resource"
+      }
+    },
+    "RecipeServiceAccessRole3815C527": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "build.apprunner.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/Recipe/ServiceAccessRole/Resource"
+      }
+    },
+    "RecipeTaskRoleA3C555E6": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "tasks.apprunner.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/Recipe/TaskRole/Resource"
+      }
+    },
+    "RecipeAppRunnerServiceDA9A12DF": {
+      "Type": "AWS::AppRunner::Service",
+      "Properties": {
+        "SourceConfiguration": {
+          "AuthenticationConfiguration": {
+            "AccessRoleArn": {
+              "Fn::GetAtt": [
+                "RecipeServiceAccessRole3815C527",
+                "Arn"
+              ]
+            }
+          },
+          "ImageRepository": {
+            "ImageConfiguration": {
+              "Port": "80"
+            },
+            "ImageIdentifier": {
+              "Fn::Join": [
+                "",
+                [
+                  "393840302653.dkr.ecr.us-east-1.",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  },
+                  "/hello-apprunner-dynamo:637925610827369741"
+                ]
+              ]
+            },
+            "ImageRepositoryType": "ECR"
+          }
+        },
+        "HealthCheckConfiguration": {
+          "HealthyThreshold": 3,
+          "Interval": 5,
+          "Protocol": "TCP",
+          "Timeout": 2,
+          "UnhealthyThreshold": 3
+        },
+        "InstanceConfiguration": {
+          "Cpu": "1024",
+          "InstanceRoleArn": {
+            "Fn::GetAtt": [
+              "RecipeTaskRoleA3C555E6",
+              "Arn"
+            ]
+          },
+          "Memory": "2048"
+        },
+        "NetworkConfiguration": {
+          "EgressConfiguration": {
+            "EgressType": "VPC",
+            "VpcConnectorArn": {
+              "Fn::GetAtt": [
+                "apprunnervpcconnector",
+                "VpcConnectorArn"
+              ]
+            }
+          }
+        },
+        "ServiceName": "hello-apprunner-dynamo-service"
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/Recipe/AppRunnerService"
+      }
+    },
+    "CDKMetadata": {
+      "Type": "AWS::CDK::Metadata",
+      "Properties": {
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/0WQzW6DMBCEnyV3YwKReuuBUlTlQhGJuFbGbFQ3YFv2mggh3r3mJ0E+7Oy3o9V4Yxqd6PHAHjbgzT1oRU3HCzJ+Jx79jMBjOlaak/QmqyIlhatbwS+uloAz21WpHMKV1S3sfGeJtYoLhkLJl3kW2bmYS87wiyE82EAKI3ov98VniWC8fhrWJFuXoM/624FEshEfNpONVkLiZn22E2FaGyclGDrOI81T5TuOyiyZwfSCw0SaQbJONf4Sr/8sYiKCdXQs1crmOhHghpaglRV+zfDBrGclWOUMX1zfDrVbL7TRiXwqzAHDE41o/BbSPLumykCidVCBsf5G772fhRE9zu/wZ4UIfHAUHdByrf9asK5huAEAAA=="
+      },
+      "Metadata": {
+        "aws:cdk:path": "hello-apprunner-dynamo/CDKMetadata/Default"
+      }
+    }
+  },
+  "Outputs": {
+    "dynamovpcVpcId": {
+      "Value": {
+        "Ref": "dynamovpcD91AD32A"
+      }
+    },
+    "dynamovpcPrivateSubnets0SubnetId": {
+      "Value": {
+        "Ref": "dynamovpcD91AD32A"
+      }
+    },
+    "DynamoDBTableName": {
+      "Value": {
+        "Ref": "OnThisDate05C8EC1E"
+      }
+    },
+    "dynamogatewayendpoint": {
+      "Value": {
+        "Ref": "dynamovpcdynamogatewayendpoint692507D6"
+      }
+    },
+    "RecipeEndpointURL20D2E3A7": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://",
+            {
+              "Fn::GetAtt": [
+                "RecipeAppRunnerServiceDA9A12DF",
+                "ServiceUrl"
+              ]
+            },
+            "/"
+          ]
+        ]
+      }
+    }
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Type": "AWS::SSM::Parameter::Value<String>",
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+    }
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5"
+                  ],
+                  {
+                    "Ref": "BootstrapVersion"
+                  }
+                ]
+              }
+            ]
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+        }
+      ]
+    }
+  }
+}

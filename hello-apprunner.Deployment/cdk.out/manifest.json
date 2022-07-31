@@ -1,0 +1,178 @@
+{
+  "version": "16.0.0",
+  "artifacts": {
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    },
+    "hello-apprunner.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "hello-apprunner.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "hello-apprunner": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://393840302653/us-west-2",
+      "properties": {
+        "templateFile": "hello-apprunner.template.json",
+        "tags": {
+          "aws-dotnet-deploy": "55d616bf-3f6f-4e6c-9b08-881fd86fab92"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::393840302653:role/cdk-hnb659fds-deploy-role-393840302653-us-west-2",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::393840302653:role/cdk-hnb659fds-cfn-exec-role-393840302653-us-west-2",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-393840302653-us-west-2/035d98721d7b724b35bacb881304f799a12b645f6c93e27484c2bb2da169c9eb.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "hello-apprunner.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::393840302653:role/cdk-hnb659fds-lookup-role-393840302653-us-west-2",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "hello-apprunner.assets"
+      ],
+      "metadata": {
+        "/hello-apprunner": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "aws-dotnet-deploy",
+                "Value": "55d616bf-3f6f-4e6c-9b08-881fd86fab92"
+              }
+            ]
+          }
+        ],
+        "/hello-apprunner/default-vpc/dynamo-gateway-endpoint/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "defaultvpcdynamogatewayendpointAA4C3FD3"
+          }
+        ],
+        "/hello-apprunner/sg-vpc-connector": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "Ignoring Egress rule since 'allowAllOutbound' is set to true; To add customize rules, set allowAllOutbound=false on the SecurityGroup",
+            "trace": [
+              "Annotations.addMessage (C:\\Users\\palldavi\\AppData\\Local\\Temp\\jsii-kernel-EyJiEw\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:1213)",
+              "Annotations.addWarning (C:\\Users\\palldavi\\AppData\\Local\\Temp\\jsii-kernel-EyJiEw\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:600)",
+              "SecurityGroup.addEgressRule (C:\\Users\\palldavi\\AppData\\Local\\Temp\\jsii-kernel-EyJiEw\\node_modules\\aws-cdk-lib\\aws-ec2\\lib\\security-group.js:1:6365)",
+              "C:\\Users\\palldavi\\AppData\\Local\\Temp\\eyvb5yvj.qrl\\lib\\program.js:8228:134",
+              "Kernel._wrapSandboxCode (C:\\Users\\palldavi\\AppData\\Local\\Temp\\eyvb5yvj.qrl\\lib\\program.js:8840:24)",
+              "C:\\Users\\palldavi\\AppData\\Local\\Temp\\eyvb5yvj.qrl\\lib\\program.js:8228:107",
+              "Kernel._ensureSync (C:\\Users\\palldavi\\AppData\\Local\\Temp\\eyvb5yvj.qrl\\lib\\program.js:8821:28)",
+              "Kernel.invoke (C:\\Users\\palldavi\\AppData\\Local\\Temp\\eyvb5yvj.qrl\\lib\\program.js:8228:34)",
+              "KernelHost.processRequest (C:\\Users\\palldavi\\AppData\\Local\\Temp\\eyvb5yvj.qrl\\lib\\program.js:9761:36)",
+              "KernelHost.run (C:\\Users\\palldavi\\AppData\\Local\\Temp\\eyvb5yvj.qrl\\lib\\program.js:9724:22)",
+              "Immediate._onImmediate (C:\\Users\\palldavi\\AppData\\Local\\Temp\\eyvb5yvj.qrl\\lib\\program.js:9725:46)",
+              "processImmediate (internal/timers.js:464:21)"
+            ]
+          }
+        ],
+        "/hello-apprunner/sg-vpc-connector/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "sgvpcconnectorDAD61D5C"
+          }
+        ],
+        "/hello-apprunner/apprunner-vpc-conn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "apprunnervpcconn"
+          }
+        ],
+        "/hello-apprunner/apprunner-vpc-connector": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "apprunnervpcconnector"
+          }
+        ],
+        "/hello-apprunner/OnThisDate": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "OnThisDate05C8EC1E"
+            }
+          }
+        ],
+        "/hello-apprunner/OnThisDate/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OnThisDate05C8EC1E"
+          }
+        ],
+        "/hello-apprunner/DynamoDB-OnThisDate": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DynamoDBOnThisDate"
+          }
+        ],
+        "/hello-apprunner/dynamo-gateway-endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "dynamogatewayendpoint"
+          }
+        ],
+        "/hello-apprunner/Recipe/ServiceAccessRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RecipeServiceAccessRole3815C527"
+          }
+        ],
+        "/hello-apprunner/Recipe/TaskRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RecipeTaskRoleA3C555E6"
+          }
+        ],
+        "/hello-apprunner/Recipe/AppRunnerService": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RecipeAppRunnerServiceDA9A12DF"
+          }
+        ],
+        "/hello-apprunner/Recipe/EndpointURL": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RecipeEndpointURL20D2E3A7"
+          }
+        ],
+        "/hello-apprunner/dynamodb-on-this-date/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "dynamodbonthisdate6EA1B04C"
+          }
+        ],
+        "/hello-apprunner/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/hello-apprunner/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/hello-apprunner/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "hello-apprunner"
+    }
+  }
+}

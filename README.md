@@ -1,6 +1,6 @@
 # Hello, Deployment Projects!
 
-This is the code project for the [Hello, Deployment Projects]([Hello, Cloud](https://davidpallmann.hashnode.dev/hello-deployment-projects)) blog post.
+This is the code project for the [Hello, Deployment Projects](https://davidpallmann.hashnode.dev/hello-deployment-projects) blog post.
 
 This episode: AWS .NET Deployment Projects. In this [Hello, Cloud](https://davidpallmann.hashnode.dev/series/hello-cloud) blog series, we're covering the basics of AWS cloud services for newcomers who are .NET developers. If you love C# but are new to AWS, or to this particular service, this should give you a jumpstart.
 
